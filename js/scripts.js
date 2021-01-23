@@ -3,17 +3,6 @@ const operands = document.querySelectorAll('.operands');
 let display = document.querySelector('p');
 let numbersInDispaly = '';
 
-function inputNumbers() {
-    numbers.forEach(number => {
-        number.addEventListener('click', () => {
-            if (display.textContent.length < 17) {
-                numbersInDispaly += number.textContent;
-                display.textContent = numbersInDispaly;
-            }
-        });
-    })
-}
-
 function operate(operator, firstNumber, secondNumber) {
     switch(operator) {
         case '+':
@@ -31,4 +20,11 @@ function operate(operator, firstNumber, secondNumber) {
     }
 }
 
-inputNumbers();
+function populateDisplay() {
+    if (display.textContent.length < 17) {
+        numbersInDispaly += this.textContent;
+        return display.textContent = numbersInDispaly;
+    }
+}
+
+numbers.forEach(number => number.addEventListener('click', populateDisplay));

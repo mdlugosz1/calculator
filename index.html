@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet"> 
     <title>Calculator</title>
 </head>
 
@@ -13,9 +15,10 @@
         <div class="container">
             <div class="calculator">
                 <div class="display">
-                    <p></p>
+                    <div class="history"></div>
+                    <div class="input-numbers"></div>
                 </div>
-                <button class="operand">C</button>
+                <button class="operand" id="clear">C</button>
                 <button class="operand">+/-</button>
                 <button class="operand">%</button>
                 <button class="operand">+</button>

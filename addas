@@ -1,0 +1,29 @@
+[33mcommit 871db0910193a8127c39e703f656bba2618a4501[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: Michał Długosz <mdugosz@gmail.com>
+Date:   Mon Jan 25 20:24:07 2021 +0100
+
+    Changed get operator function, input variables changed to object, added storedValue and makeEquasion funcitons
+
+[33mcommit 0ba652d0aae7859fbd9ea64475477f2436efb096[m
+Author: Michał Długosz <mdugosz@gmail.com>
+Date:   Sat Jan 23 16:07:06 2021 +0100
+
+    Removed inputNumbers function and added simpler populateDisplay
+
+[33mcommit 0cb966d2e781b983c981b19fa5bfda9b61ae3ba9[m
+Author: Michał Długosz <mdugosz@gmail.com>
+Date:   Sat Jan 23 15:56:23 2021 +0100
+
+    Created operating and populating display functions
+
+[33mcommit eb4f2b1c62b44b4c6d65629554936d4ade5ed1e7[m
+Author: Michał Długosz <mdugosz@gmail.com>
+Date:   Wed Jan 20 19:44:15 2021 +0100
+
+    added basic html and styles
+
+[33mcommit 0e00db3770b587df1383c34c01beac8c34b1cdb1[m
+Author: Michał Długosz <mdugosz@gmail.com>
+Date:   Sun Jan 17 18:48:19 2021 +0100
+
+    Added base project files

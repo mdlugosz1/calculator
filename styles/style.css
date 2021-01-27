@@ -35,10 +35,23 @@
     grid-column: 1/5;
     background-color: var(--secondary-color);
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    flex-direction: column;
     margin-bottom: 10px;
     font-size: 1.25em;
+    
+}
+
+.history {
+    height: 35%;
+    background: transparent;
+}
+
+.input-numbers {
+    height: 65%;
+    text-align: right;
+    padding: 5px;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--main-color);
 }
 
 p {

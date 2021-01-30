@@ -3,47 +3,56 @@ const operands = document.querySelectorAll('.operand');
 const display = document.querySelector('.input-numbers');
 const equals = document.querySelector('.equals');
 const clear = document.querySelector('#clear');
+const dot = document.querySelector('.dot');
+const backspace = document.querySelector('#backspace');
+const percent = document.querySelector('#percent');
+const plusMinus = document.querySelector('.plus-minus');
 
-let operator = '';
 let input = {
+    operator: '',
     displayValue: '',
     storedValue: [],
 };
 
-function operate(operator, input) {
-    switch(operator) {
+function showValue() {
+    display.textContent = input.displayValue;
+
+    if (input.displayValue === '') {
+        display.textContent = input.storedValue;
+    }
+}
+
+function operate(obj) {
+    switch (obj.operator) {
         case '+':
-            const sum = input.storedValue.reduce((a, b) => a + b);
-            input.storedValue = [sum];
-            display.textContent = input.storedValue;
+            const sum = obj.storedValue.reduce((a, b) => a + b);
+            obj.storedValue = [sum];
             break;
         case '-':
-            const substract = input.storedValue.reduce((a, b) => a - b);
-            input.storedValue = [substract];
-            display.textContent = input.storedValue;
+            const substract = obj.storedValue.reduce((a, b) => a - b);
+            obj.storedValue = [substract];
             break;
         case '*':
-            const multiply = input.storedValue.reduce((a, b) => a * b);
-            input.storedValue = [multiply];
-            display.textContent = input.storedValue;
+            const multiply = obj.storedValue.reduce((a, b) => a * b);
+            obj.storedValue = [multiply];
             break;
         case '/':
-            if (input.storedValue[1] === 0) {
-                input.storedValue.splice(0, 2);
-                display.textContent = 'DON\'\T DIVIDE BY 0';
-            } else {
-                const divide = input.storedValue.reduce((a, b) => a / b);
-                input.storedValue = [divide];
-                display.textContent = input.storedValue;
-            }
+            const divide = obj.storedValue.reduce((a, b) => a / b);
+            obj.storedValue = [+divide.toFixed(12)];
             break;
     }
 }
 
 function populateDisplay(e) {
-    if (input.displayValue.length <= 17) {
+    if (input.displayValue.length <= 10) {
         input.displayValue += e.target.textContent;
-        display.textContent = input.displayValue;
+        showValue();
+
+        if (input.displayValue.includes('.')) {
+            dot.removeEventListener('click', populateDisplay);
+        } else {
+            dot.addEventListener('click', populateDisplay);
+        }
     }
 }
 
@@ -54,33 +63,64 @@ function storeValue() {
     }
 }
 
-function getOperator(e) {   
+function getOperator(e) {
     if (input.storedValue.length === 0) {
         storeValue();
-        operator = e.target.textContent;
+        input.operator = e.target.textContent;
     } else {
-        storeValue();
-        makeEquasion(operator, input);
-        operator = e.target.textContent
+        makeEquasion();
+        input.operator = e.target.textContent
     }
 }
 
 function makeEquasion() {
     if (input.storedValue.length !== 0) {
         storeValue();
-        operate(operator, input);
+        operate(input);
+        showValue();
+
+        if (input.storedValue == Infinity) {
+            input.storedValue = [];
+            display.textContent = 'NOPE';
+        }
     }
 }
 
 function setDefaultValues() {
-    operator = ''
+    input.operator = ''
     input.displayValue = '';
     input.storedValue = [];
     display.textContent = '0';
+}
+
+function removeLastChar() {
+    if (input.displayValue !== '') {
+        const modifiedNumber = input.displayValue.slice(0, -1);
+        input.displayValue = modifiedNumber;
+        showValue();
+    }
+}
+
+function toPercent() {
+    
+}
+
+function negativePositive() {
+    storeValue();
+
+    if (input.storedValue[0] > 0) {
+        input.storedValue[0] = -input.storedValue[0];
+    } else {
+        input.storedValue[0] = Math.abs(input.storedValue[0]);
+    }
+
+    showValue();
 }
 
 numbers.forEach(number => number.addEventListener('click', populateDisplay));
 operands.forEach(operand => operand.addEventListener('click', getOperator));
 equals.addEventListener('click', makeEquasion);
 clear.addEventListener('click', setDefaultValues);
-
+backspace.addEventListener('click', removeLastChar);
+percent.addEventListener('click', toPercent);
+plusMinus.addEventListener('click', negativePositive);

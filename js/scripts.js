@@ -102,26 +102,36 @@ function removeLastChar() {
 }
 
 function toPercent() {
+    let show = input.displayValue;
+    let memory = input.storedValue[0];
     
+    if (show !== '') {
+        input.displayValue = show/100;
+    } else if (show === '' && memory !== '') {
+        input.storedValue[0] = memory/100;
+    }
+    showValue();
 }
 
 function negativePositive() {
-    if (input.displayValue !== '') {
-        if (input.displayValue > 0) {
-            input.displayValue = -input.displayValue;
+    let show = input.displayValue;
+    let memory = input.storedValue[0];
+    
+    if (show !== '') {
+        if (show > 0) {
+            input.displayValue = -show;
         } else {
-            input.displayValue = Math.abs(input.displayValue);
+            input.displayValue = Math.abs(show);
         }
     }
 
-    if (input.displayValue === '' && input.storedValue !== '') {
-        if (input.storedValue[0] > 0) {
-            input.storedValue[0] = -input.storedValue[0];
+    if (show === '' && memory !== '') {
+        if (memory > 0) {
+            input.storedValue[0] = -memory;
         } else {
-            input.storedValue[0] = Math.abs(input.storedValue[0]);
+            input.storedValue[0] = Math.abs(memory);
         }
     }
-
     showValue();
 }
 

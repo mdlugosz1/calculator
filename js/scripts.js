@@ -69,7 +69,7 @@ function getOperator(e) {
         input.operator = e.target.textContent;
     } else {
         makeEquasion();
-        input.operator = e.target.textContent
+        input.operator = e.target.textContent;
     }
 }
 
@@ -106,12 +106,20 @@ function toPercent() {
 }
 
 function negativePositive() {
-    storeValue();
+    if (input.displayValue !== '') {
+        if (input.displayValue > 0) {
+            input.displayValue = -input.displayValue;
+        } else {
+            input.displayValue = Math.abs(input.displayValue);
+        }
+    }
 
-    if (input.storedValue[0] > 0) {
-        input.storedValue[0] = -input.storedValue[0];
-    } else {
-        input.storedValue[0] = Math.abs(input.storedValue[0]);
+    if (input.displayValue === '' && input.storedValue !== '') {
+        if (input.storedValue[0] > 0) {
+            input.storedValue[0] = -input.storedValue[0];
+        } else {
+            input.storedValue[0] = Math.abs(input.storedValue[0]);
+        }
     }
 
     showValue();

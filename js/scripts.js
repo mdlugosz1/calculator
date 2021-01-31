@@ -47,12 +47,14 @@ function populateDisplay(e) {
     if (input.displayValue.length <= 10) {
         input.displayValue += e.target.textContent;
         showValue();
+    }
+}
 
-        if (input.displayValue.includes('.')) {
-            dot.removeEventListener('click', populateDisplay);
-        } else {
-            dot.addEventListener('click', populateDisplay);
-        }
+function decimalCheck() {
+    if (input.displayValue.includes('.')) {
+        dot.removeEventListener('click', populateDisplay);
+    } else {
+        dot.addEventListener('click', populateDisplay);
     }
 }
 
@@ -67,6 +69,7 @@ function getOperator(e) {
     if (input.storedValue.length === 0) {
         storeValue();
         input.operator = e.target.textContent;
+        
     } else {
         makeEquasion();
         input.operator = e.target.textContent;
@@ -97,6 +100,7 @@ function removeLastChar() {
     if (input.displayValue !== '') {
         const modifiedNumber = input.displayValue.slice(0, -1);
         input.displayValue = modifiedNumber;
+        decimalCheck();
         showValue();
     }
 }
@@ -142,3 +146,4 @@ clear.addEventListener('click', setDefaultValues);
 backspace.addEventListener('click', removeLastChar);
 percent.addEventListener('click', toPercent);
 plusMinus.addEventListener('click', negativePositive);
+dot.addEventListener('click', decimalCheck);

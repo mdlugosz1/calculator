@@ -20,6 +20,10 @@ function showValue() {
     if (input.displayValue === '') {
         display.textContent = input.storedValue;
     }
+    console.log('operator: ', input.operator);
+    console.log('display: ', input.displayValue);
+    console.log('memory: ', input.storedValue);
+    console.log('----------------------------');
 }
 
 function operate(obj) {
@@ -45,14 +49,19 @@ function operate(obj) {
 
 function populateDisplay(e) {
     if (input.displayValue.length <= 10) {
-        input.displayValue += e.target.textContent;
+        if (e.key) {
+            input.displayValue += e.key;
+        } else {
+            input.displayValue += e.target.textContent;
+        }
         showValue();
-    }
+    }     
 }
 
 function decimalCheck() {
     if (input.displayValue.includes('.')) {
         dot.removeEventListener('click', populateDisplay);
+        return 1;
     } else {
         dot.addEventListener('click', populateDisplay);
     }
@@ -68,11 +77,20 @@ function storeValue() {
 function getOperator(e) {
     if (input.storedValue.length === 0) {
         storeValue();
-        input.operator = e.target.textContent;
-        
+
+        if (e.key) {
+            input.operator = e.key;
+        } else {
+            input.operator = e.target.textContent;
+        }
     } else {
         makeEquasion();
-        input.operator = e.target.textContent;
+
+        if (e.key) {
+            input.operator = e.key;
+        } else {
+            input.operator = e.target.textContent;
+        }
     }
 }
 
@@ -84,7 +102,7 @@ function makeEquasion() {
 
         if (input.storedValue == Infinity) {
             input.storedValue = [];
-            display.textContent = 'NOPE';
+            display.textContent = 'HELL NO!';
         }
     }
 }
@@ -139,6 +157,21 @@ function negativePositive() {
     showValue();
 }
 
+function keyboardInput(e) {
+    if ((e.key >= 0 && e.key < 10) || e.key === '.') {
+        populateDisplay(e);
+    } else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
+        getOperator(e);
+    } else if (e.key === 'Backspace') {
+        removeLastChar();
+    } else if (e.key === "Enter") {
+        makeEquasion();
+    } else if (e.key === 'Escape') {
+        setDefaultValues();
+    } 
+}
+
+
 numbers.forEach(number => number.addEventListener('click', populateDisplay));
 operands.forEach(operand => operand.addEventListener('click', getOperator));
 equals.addEventListener('click', makeEquasion);
@@ -147,3 +180,4 @@ backspace.addEventListener('click', removeLastChar);
 percent.addEventListener('click', toPercent);
 plusMinus.addEventListener('click', negativePositive);
 dot.addEventListener('click', decimalCheck);
+window.addEventListener('keydown', keyboardInput);

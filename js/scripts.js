@@ -20,10 +20,11 @@ function showValue() {
     if (input.displayValue === '') {
         display.textContent = input.storedValue;
     }
-    console.log('operator: ', input.operator);
-    console.log('display: ', input.displayValue);
-    console.log('memory: ', input.storedValue);
-    console.log('----------------------------');
+
+    /* if (display.textContent.length >= 12) {
+        const number = Number(display.textContent);
+        display.textContent = number.toExponential();
+    } */
 }
 
 function operate(obj) {
@@ -42,12 +43,16 @@ function operate(obj) {
             break;
         case '/':
             const divide = obj.storedValue.reduce((a, b) => a / b);
-            obj.storedValue = [+divide.toFixed(12)];
+            obj.storedValue = [divide];
             break;
     }
 }
 
 function populateDisplay(e) {
+    if (e.keyCode === 32) {
+        return false;
+    }
+
     if (input.displayValue.length <= 10) {
         if (e.key) {
             input.displayValue += e.key;
@@ -61,7 +66,6 @@ function populateDisplay(e) {
 function decimalCheck() {
     if (input.displayValue.includes('.')) {
         dot.removeEventListener('click', populateDisplay);
-        return 1;
     } else {
         dot.addEventListener('click', populateDisplay);
     }
@@ -102,7 +106,7 @@ function makeEquasion() {
 
         if (input.storedValue == Infinity) {
             input.storedValue = [];
-            display.textContent = 'HELL NO!';
+            display.textContent = 'HELL NO!';input.operator = '';
         }
     }
 }
@@ -120,7 +124,14 @@ function removeLastChar() {
         input.displayValue = modifiedNumber;
         decimalCheck();
         showValue();
+    } else if (input.displayValue === ''){
+        const storedNumber = input.storedValue[0].toString();
+        let nextStored = Number(storedNumber.slice(0, -1));
+        input.storedValue = [nextStored];
+        showValue();
     }
+
+    if (input.storedValue[0] === '') {input.storedValue = [0];}
 }
 
 function toPercent() {
@@ -132,6 +143,7 @@ function toPercent() {
     } else if (show === '' && memory !== '') {
         input.storedValue[0] = memory/100;
     }
+
     showValue();
 }
 
@@ -154,6 +166,7 @@ function negativePositive() {
             input.storedValue[0] = Math.abs(memory);
         }
     }
+
     showValue();
 }
 
@@ -163,11 +176,15 @@ function keyboardInput(e) {
     } else if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') {
         getOperator(e);
     } else if (e.key === 'Backspace') {
-        removeLastChar();
+        backspace.click();
     } else if (e.key === "Enter") {
-        makeEquasion();
+        e.preventDefault();
+        equals.click();
     } else if (e.key === 'Escape') {
-        setDefaultValues();
+        clear.click();
+    } else if (e.key === ','){
+        decimalCheck();
+        dot.click();
     } 
 }
 

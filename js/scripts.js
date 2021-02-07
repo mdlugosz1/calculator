@@ -1,30 +1,31 @@
 const numbers = document.querySelectorAll('.numbers');
-const operands = document.querySelectorAll('.operand');
-const display = document.querySelector('.input-numbers');
+const operands = document.querySelectorAll('.operator');
+const screen = document.querySelector('.input-numbers');
 const equals = document.querySelector('.equals');
 const clear = document.querySelector('#clear');
 const dot = document.querySelector('.dot');
 const backspace = document.querySelector('#backspace');
 const percent = document.querySelector('#percent');
 const plusMinus = document.querySelector('.plus-minus');
+const zero = document.querySelector('.zero');
 
 let input = {
     operator: '',
-    displayValue: '',
+    displayValue: '0',
     storedValue: [],
 };
 
 function showValue() {
-    display.textContent = input.displayValue;
+    screen.textContent = input.displayValue;
 
     if (input.displayValue === '') {
-        display.textContent = input.storedValue;
+        screen.textContent = input.storedValue;
     }
 
-    /* if (display.textContent.length >= 12) {
-        const number = Number(display.textContent);
-        display.textContent = number.toExponential();
-    } */
+    if (screen.textContent.length > 14) {
+        const before = input.storedValue[0];
+        screen.textContent = before.toExponential(2);
+    }
 }
 
 function operate(obj) {
@@ -43,7 +44,7 @@ function operate(obj) {
             break;
         case '/':
             const divide = obj.storedValue.reduce((a, b) => a / b);
-            obj.storedValue = [divide];
+            obj.storedValue = [Number(divide.toFixed(6))];
             break;
     }
 }
@@ -53,14 +54,19 @@ function populateDisplay(e) {
         return false;
     }
 
-    if (input.displayValue.length <= 10) {
+    if (input.displayValue === '0') {
+        input.displayValue = '';
+    }
+
+    if (input.displayValue.length < 12) {
         if (e.key) {
             input.displayValue += e.key;
         } else {
             input.displayValue += e.target.textContent;
         }
-        showValue();
     }     
+
+    showValue();
 }
 
 function decimalCheck() {
@@ -81,20 +87,14 @@ function storeValue() {
 function getOperator(e) {
     if (input.storedValue.length === 0) {
         storeValue();
-
-        if (e.key) {
-            input.operator = e.key;
-        } else {
-            input.operator = e.target.textContent;
-        }
     } else {
         makeEquasion();
+    }
 
-        if (e.key) {
-            input.operator = e.key;
-        } else {
-            input.operator = e.target.textContent;
-        }
+    if (e.key) {
+        input.operator = e.key;
+    } else {
+        input.operator = e.target.textContent;
     }
 }
 
@@ -102,20 +102,21 @@ function makeEquasion() {
     if (input.storedValue.length !== 0) {
         storeValue();
         operate(input);
-        showValue();
-
-        if (input.storedValue == Infinity) {
+        
+        if (isFinite(input.storedValue)) {
+            showValue();
+        } else {
             input.storedValue = [];
-            display.textContent = 'HELL NO!';input.operator = '';
+            screen.textContent = 'HELL NO!';
         }
     }
 }
 
 function setDefaultValues() {
     input.operator = ''
-    input.displayValue = '';
+    input.displayValue = '0';
     input.storedValue = [];
-    display.textContent = '0';
+    screen.textContent = '0';
 }
 
 function removeLastChar() {
@@ -123,33 +124,36 @@ function removeLastChar() {
         const modifiedNumber = input.displayValue.slice(0, -1);
         input.displayValue = modifiedNumber;
         decimalCheck();
-        showValue();
     } else if (input.displayValue === ''){
-        const storedNumber = input.storedValue[0].toString();
+        const storedNumber = input.storedValue.toString();
         let nextStored = Number(storedNumber.slice(0, -1));
         input.storedValue = [nextStored];
-        showValue();
-    }
-
-    if (input.storedValue[0] === '') {input.storedValue = [0];}
-}
-
-function toPercent() {
-    let show = input.displayValue;
-    let memory = input.storedValue[0];
-    
-    if (show !== '') {
-        input.displayValue = show/100;
-    } else if (show === '' && memory !== '') {
-        input.storedValue[0] = memory/100;
     }
 
     showValue();
 }
 
+function toPercent() {
+    let show = input.displayValue;
+    let memory = input.storedValue;
+    
+    if (show !== '') {
+        input.displayValue = Math.round((show / 100)*1000000000)/1000000000;
+    } else if (show === '' && memory !== '') {
+        input.storedValue = [Math.round((memory / 100)*1000000000)/1000000000];
+    }
+
+    if (isNaN(memory) || isNaN(show)) {
+        screen.textContent = 0;
+        input.storedValue = [];
+    }
+    
+    showValue();
+}
+
 function negativePositive() {
     let show = input.displayValue;
-    let memory = input.storedValue[0];
+    let memory = input.storedValue;
     
     if (show !== '') {
         if (show > 0) {
@@ -161,10 +165,10 @@ function negativePositive() {
 
     if (show === '' && memory !== '') {
         if (memory > 0) {
-            input.storedValue[0] = -memory;
-        } else {
-            input.storedValue[0] = Math.abs(memory);
-        }
+            input.storedValue = [-memory];
+        } else if (memory < 0){
+            input.storedValue = [Math.abs(memory)];
+        } 
     }
 
     showValue();
@@ -187,7 +191,6 @@ function keyboardInput(e) {
         dot.click();
     } 
 }
-
 
 numbers.forEach(number => number.addEventListener('click', populateDisplay));
 operands.forEach(operand => operand.addEventListener('click', getOperator));
